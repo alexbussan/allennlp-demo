@@ -140,7 +140,18 @@ class ModelEndpoint:
         """
         Returns predictions.
         """
-        return self.predictor.predict_json(inputs)
+        passage = inputs["passage"]
+        output = {}
+        for question_key, question_value in inputs.items():
+            if "question" in question_key:
+                qa_pair = {}
+                qa_pair[question_key] = question_value
+                qa_pair["passage"] = passage
+
+                answer = self.predictor.predict_json(qa_pair)
+                output[question_key] = answer["best_span_str"]
+
+        return output
 
     def interpret(self, interpreter_id: str, inputs: JsonDict) -> JsonDict:
         """

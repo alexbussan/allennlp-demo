@@ -145,11 +145,11 @@ class ModelEndpoint:
         for question_key, question_value in inputs.items():
             if "question" in question_key:
                 qa_pair = {}
-                qa_pair[question_key] = question_value
+                qa_pair["question"] = question_value
                 qa_pair["passage"] = passage
 
                 answer = self.predictor.predict_json(qa_pair)
-                output[question_key] = answer["best_span_str"]
+                output[question_key.replace("question", "answer")] = answer["best_span_str"]
 
         return output
 
